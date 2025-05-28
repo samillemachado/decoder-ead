@@ -26,8 +26,7 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public Page<UserModel> getAllUsers(@PageableDefault(page = 0, size = 3, sort = "userId", direction = Sort.Direction.ASC)
-                                       Pageable pageable) {
+    public Page<UserModel> getAllUsers(Pageable pageable) {
         return userService.findAll(pageable);
     }
 
