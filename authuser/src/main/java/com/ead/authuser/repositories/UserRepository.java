@@ -1,4 +1,4 @@
-package com.ead.authuser;
+package com.ead.authuser.repositories;
 
 import com.ead.authuser.models.UserModel;
 import org.springframework.data.jpa.repository.JpaRepository;
