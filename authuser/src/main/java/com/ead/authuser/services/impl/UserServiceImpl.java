@@ -3,6 +3,7 @@ package com.ead.authuser.services.impl;
 import com.ead.authuser.dtos.UserRecordDto;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
+import com.ead.authuser.exceptions.ConstranintViolationException;
 import com.ead.authuser.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
@@ -33,11 +34,6 @@ public class UserServiceImpl implements UserService {
     public UserModel findById(UUID userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Error: User not found!"));
-//        Optional<UserModel> userModelOptional = userRepository.findById(userId);
-//        if(userModelOptional.isEmpty()){
-//            throw new NotFoundException("Error: User not found!");
-//        }
-//        return userModelOptional;
     }
 
     @Override
@@ -47,6 +43,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserModel registerUser(UserRecordDto userRecordDto) {
+        validateInput(userRecordDto);
         var userModel = new UserModel();
         BeanUtils.copyProperties(userRecordDto, userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
@@ -55,4 +52,22 @@ public class UserServiceImpl implements UserService {
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
         return userRepository.save(userModel);
     }
+
+    private void validateInput(UserRecordDto userRecordDto) {
+        if(alreadyExistsUsername(userRecordDto.username())){
+            throw new ConstranintViolationException("Error: Username already exists!");
+        }
+        if(alreadyExistsEmail(userRecordDto.email())){
+            throw new ConstranintViolationException("Error: Email already exists!");
+        }
+    }
+
+    private boolean alreadyExistsEmail(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private boolean alreadyExistsUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
 }

@@ -13,4 +13,10 @@ public class GlobalExceptionHandler {
         ErrorRecordResponse errorResponse = new ErrorRecordResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
     }
+
+    @ExceptionHandler(ConstranintViolationException.class)
+    public ResponseEntity<ErrorRecordResponse> handleConstranintViolationException(final ConstranintViolationException ex) {
+        ErrorRecordResponse errorResponse = new ErrorRecordResponse(HttpStatus.CONFLICT.value(), ex.getMessage(), null);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(errorResponse);
+    }
 }
