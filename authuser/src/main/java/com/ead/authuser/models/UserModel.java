@@ -92,11 +92,11 @@ public class UserModel implements Serializable {
         this.password = password;
     }
 
-    public String getFulltName() {
+    public String getFullName() {
         return fullName;
     }
 
-    public void setFulltName(String fulltName) {
+    public void setFullName(String fulltName) {
         this.fullName = fulltName;
     }
 
