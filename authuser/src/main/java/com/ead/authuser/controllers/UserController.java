@@ -1,7 +1,9 @@
 package com.ead.authuser.controllers;
 
+import com.ead.authuser.dtos.UserRecordDto;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,5 +36,21 @@ public class UserController {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable(value = "userId") UUID userId) {
         userService.delete(userId);
+    }
+
+    @PutMapping("/{userId}")
+    @ResponseStatus(code = HttpStatus.OK)
+    public UserModel updateUser(@PathVariable(value = "userId") UUID userId,
+                           @RequestBody
+                           @JsonView(UserRecordDto.UserView.UserPut.class) UserRecordDto userRecordDto) {
+        return userService.updateUser(userRecordDto, userId);
+    }
+
+    @PutMapping("/{userId}/password")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String updatePassword(@PathVariable(value = "userId") UUID userId,
+                                @RequestBody
+                                @JsonView(UserRecordDto.UserView.PasswordPut.class) UserRecordDto userRecordDto) {
+        return userService.updatePassword(userRecordDto, userId);
     }
 }

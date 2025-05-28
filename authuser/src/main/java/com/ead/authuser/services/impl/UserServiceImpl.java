@@ -4,6 +4,7 @@ import com.ead.authuser.dtos.UserRecordDto;
 import com.ead.authuser.enums.UserStatus;
 import com.ead.authuser.enums.UserType;
 import com.ead.authuser.exceptions.ConstranintViolationException;
+import com.ead.authuser.exceptions.InvalidCurrentPasswordException;
 import com.ead.authuser.exceptions.NotFoundException;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.repositories.UserRepository;
@@ -20,6 +21,12 @@ import java.util.UUID;
 public class UserServiceImpl implements UserService {
 
     final UserRepository userRepository;
+    final String ERROR_USER_NOT_FOUND = "User not found";
+    final String ZONE_ID_UTC = "UTC";
+    final String INVALID_CURRENT_PASSWORD = "Invalid Current Password.";
+    final String USERNAME_ALREADY_EXISTS = "Username already exists!";
+    final String EMAIL_ALREADY_EXISTS = "Email already exists!";
+    final String PASSWORD_UPDATED_SUCCESSFULLY = "Password updated successfully!";
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -33,7 +40,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserModel findById(UUID userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new NotFoundException("Error: User not found!"));
+                .orElseThrow(() -> new NotFoundException(ERROR_USER_NOT_FOUND));
     }
 
     @Override
@@ -48,17 +55,42 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(userRecordDto, userModel);
         userModel.setUserStatus(UserStatus.ACTIVE);
         userModel.setUserType(UserType.USER);
-        userModel.setCreationDate(LocalDateTime.now(ZoneId.of("UTC")));
-        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of("UTC")));
+        userModel.setCreationDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
         return userRepository.save(userModel);
+    }
+
+    @Override
+    public UserModel updateUser(UserRecordDto userRecordDto, UUID userId) {
+        var userModel = findById(userId);
+        userModel.setFullName(userRecordDto.fullName());
+        userModel.setPhoneNumber(userRecordDto.phoneNumber());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
+        return userRepository.save(userModel);
+    }
+
+    @Override
+    public String updatePassword(UserRecordDto userRecordDto, UUID userId) {
+        var userModel = findById(userId);
+        if(!validateCurrentPassword(userRecordDto, userModel)){
+            throw new InvalidCurrentPasswordException(INVALID_CURRENT_PASSWORD);
+        };
+        userModel.setPassword(userRecordDto.password());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
+        userRepository.save(userModel);
+        return PASSWORD_UPDATED_SUCCESSFULLY;
+    }
+
+    private boolean validateCurrentPassword(UserRecordDto userRecordDto, UserModel userModel) {
+        return userModel.getPassword().equals(userRecordDto.oldPassword());
     }
 
     private void validateInput(UserRecordDto userRecordDto) {
         if(alreadyExistsUsername(userRecordDto.username())){
-            throw new ConstranintViolationException("Error: Username already exists!");
+            throw new ConstranintViolationException(USERNAME_ALREADY_EXISTS);
         }
         if(alreadyExistsEmail(userRecordDto.email())){
-            throw new ConstranintViolationException("Error: Email already exists!");
+            throw new ConstranintViolationException(EMAIL_ALREADY_EXISTS);
         }
     }
 
