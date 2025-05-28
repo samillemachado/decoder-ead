@@ -3,7 +3,6 @@ package com.ead.authuser.controllers;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,18 +19,20 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserModel>> getAllUsers() {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findAll());
+    @ResponseStatus(code = HttpStatus.OK)
+    public List<UserModel> getAllUsers() {
+        return userService.findAll();
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Object> getOneUser(@PathVariable(value = "userId") UUID userId) {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.findById(userId).get());
+    @ResponseStatus(code = HttpStatus.OK)
+    public UserModel getOneUser(@PathVariable(value = "userId") UUID userId) {
+        return userService.findById(userId);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Object> deleteUer(@PathVariable(value = "userId") UUID userId) {
-        userService.delete(userService.findById(userId).get());
-        return ResponseEntity.status(HttpStatus.OK).body("User deleted successfully.");
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable(value = "userId") UUID userId) {
+        userService.delete(userId);
     }
 }
