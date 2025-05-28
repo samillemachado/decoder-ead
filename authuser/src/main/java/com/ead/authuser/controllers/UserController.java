@@ -3,6 +3,7 @@ package com.ead.authuser.controllers;
 import com.ead.authuser.dtos.UserRecordDto;
 import com.ead.authuser.models.UserModel;
 import com.ead.authuser.services.UserService;
+import com.ead.authuser.specifications.SpecificationTemplate;
 import com.fasterxml.jackson.annotation.JsonView;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -26,8 +27,8 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public Page<UserModel> getAllUsers(Pageable pageable) {
-        return userService.findAll(pageable);
+    public Page<UserModel> getAllUsers(SpecificationTemplate.UserSpec spec, Pageable pageable) {
+        return userService.findAll(spec, pageable);
     }
 
     @GetMapping("/{userId}")
