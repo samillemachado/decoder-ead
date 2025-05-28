@@ -27,6 +27,7 @@ public class UserServiceImpl implements UserService {
     final String USERNAME_ALREADY_EXISTS = "Username already exists!";
     final String EMAIL_ALREADY_EXISTS = "Email already exists!";
     final String PASSWORD_UPDATED_SUCCESSFULLY = "Password updated successfully!";
+    final String IMAGE_UPDATED_SUCCESSFULLY = "Image updated successfully!";
 
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -79,6 +80,15 @@ public class UserServiceImpl implements UserService {
         userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
         userRepository.save(userModel);
         return PASSWORD_UPDATED_SUCCESSFULLY;
+    }
+
+    @Override
+    public String updateImage(UserRecordDto userRecordDto, UUID userId) {
+        var userModel = findById(userId);
+        userModel.setImageUrl(userRecordDto.imageUrl());
+        userModel.setLastUpdateDate(LocalDateTime.now(ZoneId.of(ZONE_ID_UTC)));
+        userRepository.save(userModel);
+        return IMAGE_UPDATED_SUCCESSFULLY;
     }
 
     private boolean validateCurrentPassword(UserRecordDto userRecordDto, UserModel userModel) {

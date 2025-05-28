@@ -53,4 +53,12 @@ public class UserController {
                                 @JsonView(UserRecordDto.UserView.PasswordPut.class) UserRecordDto userRecordDto) {
         return userService.updatePassword(userRecordDto, userId);
     }
+
+    @PutMapping("/{userId}/image")
+    @ResponseStatus(code = HttpStatus.OK)
+    public String updateImage(@PathVariable(value = "userId") UUID userId,
+                                 @RequestBody
+                                 @JsonView(UserRecordDto.UserView.ImagePut.class) UserRecordDto userRecordDto) {
+        return userService.updateImage(userRecordDto, userId);
+    }
 }

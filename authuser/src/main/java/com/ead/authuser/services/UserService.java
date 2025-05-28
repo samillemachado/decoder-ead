@@ -20,5 +20,7 @@ public interface UserService {
     UserModel updateUser(UserRecordDto userRecordDto, UUID userId);
 
     String updatePassword(UserRecordDto userRecordDto, UUID userId);
+
+    String updateImage(UserRecordDto userRecordDto, UUID userId);
 }
 
