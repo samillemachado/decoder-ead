@@ -40,8 +40,8 @@ public class LessonModel implements Serializable {
         return lessonId;
     }
 
-    public void setLessonId(UUID id) {
-        this.lessonId = id;
+    public void setLessonId(UUID lessonId) {
+        this.lessonId = lessonId;
     }
 
     public String getTitle() {

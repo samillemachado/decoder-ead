@@ -58,8 +58,8 @@ public class CourseModel implements Serializable {
         return courseId;
     }
 
-    public void setCourseId(UUID id) {
-        this.courseId = id;
+    public void setCourseId(UUID courseId) {
+        this.courseId = courseId;
     }
 
     public String getName() {

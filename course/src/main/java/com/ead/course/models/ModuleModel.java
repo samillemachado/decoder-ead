@@ -66,8 +66,8 @@ public class ModuleModel implements Serializable {
         return moduleId;
     }
 
-    public void setModuleId(UUID id) {
-        this.moduleId = id;
+    public void setModuleId(UUID moduleId) {
+        this.moduleId = moduleId;
     }
 
     public CourseModel getCourse() {
