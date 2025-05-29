@@ -4,10 +4,12 @@ import com.ead.course.enums.CourseLevel;
 import com.ead.course.enums.CourseStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.Set;
 import java.util.UUID;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -18,7 +20,7 @@ public class CourseModel implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private UUID courseId;
 
     @Column(nullable = false, unique = true, length = 150)
     private String name;
@@ -48,12 +50,16 @@ public class CourseModel implements Serializable {
     @Column(nullable = false, length = 255)
     private String imageUrl;
 
-    public UUID getId() {
-        return id;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @OneToMany(mappedBy = "course")
+    private Set<ModuleModel> modules;
+
+    public UUID getCourseId() {
+        return courseId;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setCourseId(UUID id) {
+        this.courseId = id;
     }
 
     public String getName() {
@@ -118,5 +124,13 @@ public class CourseModel implements Serializable {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Set<ModuleModel> getModules() {
+        return modules;
+    }
+
+    public void setModules(Set<ModuleModel> modules) {
+        this.modules = modules;
     }
 }
